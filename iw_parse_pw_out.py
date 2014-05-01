@@ -1,4 +1,7 @@
 from random import shuffle
+import sys
+
+script, pwfile = sys.argv
 
 # f_myspace = open('myspace.txt', 'r')
 # fo_myspace = open('myspace_cor.txt', 'w')
@@ -12,53 +15,56 @@ from random import shuffle
 # ------------------------------------------------------------------- #
 # 70yx parsing.
 
-f_70yx = open('70yx.txt', 'r')
-fo_70yx = open('70yx_cor.txt', 'w')
+if (pwfile == '70yx'):
+  f_70yx = open('70yx.txt', 'r')
+  fo_70yx = open('70yx_cor.txt', 'w')
 
-all_pw = []
+  all_pw = []
 
-for line in f_70yx.readlines():
-  l_split = line.split()
-  all_pw.append(l_split[2].rstrip())
+  for line in f_70yx.readlines():
+    l_split = line.split()
+    all_pw.append(l_split[2].rstrip())
 
-all_pw = set(all_pw)
-passwords = list(all_pw)
-shuffle(passwords)
+  all_pw = set(all_pw)
+  passwords = list(all_pw)
+  shuffle(passwords)
 
-for pw in passwords:
-  fo_70yx.write('%s\n' % pw)
+  for pw in passwords:
+    fo_70yx.write('%s\n' % pw)
 
-# for i in range(0,500000):
-#   l_split = lines[i].split()
-#   fo_70yx.write('%s\n' % l_split[2])
+  # for i in range(0,500000):
+  #   l_split = lines[i].split()
+  #   fo_70yx.write('%s\n' % l_split[2])
 
 # ------------------------------------------------------------------- #
 # csdn parsing.
 
-# f_csdn = open('csdn_samp.txt', 'r')
-# fo_csdn = open('csdn_cor.txt', 'w')
+elif (pwfile == 'csdn'):
+  f_csdn = open('csdn.txt', 'r')
+  fo_csdn = open('csdn_cor.txt', 'w')
 
-# lines = f_csdn.readlines()
-# shuffle(lines)
+  lines = f_csdn.readlines()
+  shuffle(lines)
 
-# for line in lines:
-#   l_split = line.split(' # ')
-#   fo_csdn.write(l_split[1])
-#   fo_csdn.write('\n')
+  for line in lines:
+    l_split = line.split(' # ')
+    fo_csdn.write(l_split[1])
+    fo_csdn.write('\n')
 
 # ------------------------------------------------------------------- #
 # uuu9 parsing.
 
-# f_uuu9 = open('uuu9_samp.txt', 'r')
-# fo_uuu9 = open('uuu9_cor.txt', 'w')
+elif (pwfile == 'uuu9'):
+  f_uuu9 = open('uuu9_samp.txt', 'r')
+  fo_uuu9 = open('uuu9_cor.txt', 'w')
 
-# lines = f_uuu9.readlines()
-# shuffle(lines)
+  lines = f_uuu9.readlines()
+  shuffle(lines)
 
-# for line in lines:
-#   l_split = line.split()
-#   fo_uuu9.write(l_split[1])
-#   fo_uuu9.write('\n')
+  for line in lines:
+    l_split = line.split()
+    fo_uuu9.write(l_split[1])
+    fo_uuu9.write('\n')
 
 # ------------------------------------------------------------------- #
 # print a sample of 200 words from a specified list.

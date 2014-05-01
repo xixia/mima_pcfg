@@ -4,4 +4,8 @@ english_ngrams/
 john/
 others./
 to the side./
-testing.txt
+*.txt
+
+# do not ignore these files...
+!freq_eng.txt
+!freq_pinyin.txt

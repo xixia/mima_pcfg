@@ -4,17 +4,17 @@ class CollectTerms:
   def __init__(self):
     self.collection = {}
 
-  def add(self, length, word):
+  def add(self, length, word, freq):
     if (len(word) != length):
       return
 
     self.collection.setdefault(length, {'words': {}, 'total': 0})
 
     # increment the overall total for this length.
-    self.collection[length]['total'] += 1
+    self.collection[length]['total'] += freq
 
     self.collection[length]['words'].setdefault(word, {'count': 0, 'prob': 0})
-    self.collection[length]['words'][word]['count'] += 1
+    self.collection[length]['words'][word]['count'] += freq
 
   def calcProb(self):
     # for each length

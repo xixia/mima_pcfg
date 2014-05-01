@@ -1,3 +1,5 @@
+# USAGE: python iw_analyze_set.py [filename of passwords to analyze] [prefix to use for output files]
+
 import operator
 import string
 import sys
@@ -335,9 +337,6 @@ f = open(filename, 'r')
 fo = open(prefix + '_types.txt', 'w')
 fo_struct = open(prefix + '_structs.txt', 'w')
 
-# maintains all of the structures.
-g_structs = {}
-
 # maintains the structures' probabilities.
 g_prob = {}
 
@@ -356,9 +355,10 @@ rand_str = CollectTerms()
 
 types = ['ENGLISH', 'PINYIN', 'RANDOM', 'HYBRID']
 
-for check in f.readlines():
-  check = check.rstrip()
-  check = check.lower()
+for line in f.readlines():
+  line = line.split()
+  check = line[0]
+  freq = int(line[1])
 
   if ((total_lines % 1000) == 0):
     print 'on password', total_lines
@@ -366,26 +366,22 @@ for check in f.readlines():
   # analyze the structure of the password.
   current_struct = ''
   prev_state = ''
-  total = 0
+  total = 0         # used for determining the struct.
 
   # other needed variables.
-  max_num = 10
-  ind = 0
-
-  prev = ''
-  num_eng = 0
-  num_pinyin = 0
-  valid_length = 0
+  max_num = 10      # TODO: figure out what this is...?
+  valid_length = 0  # valid length = length of just characters in password.
 
   # examine each character in the string. determines the 'general' structure here.
   # should probably have the structure analysis at the bottom. doesn't matter if have
   # to iterate through the characters twice right?
-  comp = []
-  ind = 0
-  prev = ''
-  same = 0
-  flag_ident = False
+  comp = []         # list of grammar components.
+  ind = 0           # starting index of this component.
+  prev = ''         # keeps track of the previous character.
+  same = 0          # keeps track of the longest string of same characters.
+  flag_ident = False  # flag which notes if this password is just a string of identical characters.
 
+  # determines the primitive structure of this passwords (letters v. numbers v. special)
   for c in check:
     curr_state = ''
     if (c.isdigit()):
@@ -393,6 +389,12 @@ for check in f.readlines():
     elif (c.isalpha()):
       curr_state = 'c'
       valid_length += 1
+
+      # should only do this check when they're characters.
+      if (c == prev):
+        same += 1
+      prev = c
+
     else:
       curr_state = 's'
 
@@ -401,10 +403,6 @@ for check in f.readlines():
       comp.append({'type': prev_state, 'len': total, 'ind': (ind - total)})
       total = 0
     ind += 1
-
-    if (c == prev):
-      same += 1
-    prev = c
 
     prev_state = curr_state
     total += 1
@@ -415,10 +413,8 @@ for check in f.readlines():
   if (same >= (0.7 * len(check))):
     flag_ident = True
 
-  # current struct is variable which contains the structure.
-  # g_structs.setdefault(current_struct, {'count': 0, 'ENGLISH': 0, 'PINYIN': 0,'HYBRID': 0, 'RANDOM': 0})
-  # g_structs[current_struct]['count'] += 1
-  total_lines += 1
+  # completed primitive structure determining at this point. onto analysis!
+  total_lines += freq
 
   # ----------------------------------------------------------------------- #
 
@@ -501,12 +497,12 @@ for check in f.readlines():
 
     # case if it's a number.
     if (t == 'n'):
-      num_str.add(l, check[i:(i + l)])
+      num_str.add(l, check[i:(i + l)], freq)
       comp_correct.append(t + str(l))
 
     # case if it's a special character.
     elif (t == 's'):
-      spec_str.add(l, check[i:(i + l)])
+      spec_str.add(l, check[i:(i + l)], freq)
       comp_correct.append(t + str(l))
 
     # case if it's a character.
@@ -521,18 +517,17 @@ for check in f.readlines():
           # aren't accounted for.
           skipped = w['ind'] - i
           if (skipped != 0):
-            rand_str.add(skipped, check[i:w['ind']])
+            rand_str.add(skipped, check[i:w['ind']], freq)
             comp_correct.append('r' + str(skipped))
 
           wlen = len(w['word'])
           if (w['type'] == 'pinyin'):
-            pinyin_str.add(wlen, w['word'])
+            pinyin_str.add(wlen, w['word'], freq)
             comp_correct.append('p' + str(wlen))
           else:
-            eng_str.add(wlen, w['word'])
+            eng_str.add(wlen, w['word'], freq)
             comp_correct.append('e' + str(wlen))
           i = w['ind'] + wlen
-          # best_opt.remove(w)
         else:
           break
 
@@ -540,14 +535,15 @@ for check in f.readlines():
       if ((max_ind - i) != 0):
         if (max_ind < i):
           print max_ind, i, comp_correct, check
-        rand_str.add(max_ind - i, check[i:max_ind])
+        rand_str.add(max_ind - i, check[i:max_ind], freq)
         comp_correct.append('r' + str(max_ind - i))
 
   # create the modified structure.
   struct = ''.join(comp_correct)
   structs_corr.setdefault(struct, {'count': 0, 'prob': 0})
-  structs_corr[struct]['count'] += 1
+  structs_corr[struct]['count'] += freq
 
+  # outputs the type for error checking, basically.
   if (len(best) > 0):
     prev_score = best[0]['score']
     fo.write('%f: ' % prev_score)
@@ -556,7 +552,6 @@ for check in f.readlines():
       fo.write('(%s, %s) ' % (w['word'], w['type']))
     fo.write('\n')
     fo.write('%s is a %s password.\n' % (check, best[0]['type']))
-    # g_structs[current_struct][best[0]['type']] += 1
 
     for i in range (1, len(best)):
       curr_score = best[i]['score']
@@ -572,7 +567,6 @@ for check in f.readlines():
 
   else:
     fo.write('%s is a RANDOM password.\n' % check)
-    # g_structs[current_struct]['RANDOM'] += 1
 
 # calculate probabilities:
 for s in structs_corr.keys():
@@ -588,17 +582,3 @@ pinyin_str.outputToFile(prefix + '_pinyin')
 eng_str.outputToFile(prefix + '_eng')
 rand_str.outputToFile(prefix + '_rand')
 spec_str.outputToFile(prefix + '_spec')
-
-# for s in g_structs.keys():
-#   g_prob[s] = {'total': 0, 'ENGLISH': 0, 'PINYIN': 0, 'RANDOM': 0, 'HYBRID': 0}
-#   g_prob[s]['total'] = float(g_structs[s]['count'] / float(total_lines))
-#   for t in types:
-#     g_prob[s][t] = float(g_structs[s][t]) / g_structs[s]['count']
-
-# finallyyyyy.
-# sorted_prob = sorted(g_prob, key=lambda g: (g_prob[g]['total']), reverse=True)
-# for p in sorted_prob:
-#   fo_struct.write('%s %f\n' % (p, g_prob[p]['total']))
-#   for t in types:
-#     fo_struct.write('%s %f  ' % (t, g_prob[p][t]))
-#   fo_struct.write('\n')
