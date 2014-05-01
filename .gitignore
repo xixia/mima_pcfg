@@ -1,7 +1,7 @@
 # not sure about this.
 .DS_Store
-./english_ngrams
-./john
-./others.
-./to the side.
+english_ngrams/
+john/
+others./
+to the side./
 testing.txt
