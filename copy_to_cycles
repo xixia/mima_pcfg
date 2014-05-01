@@ -1,0 +1,9 @@
+#!/bin/bash
+
+scp *.py xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg
+# scp freq_eng.txt freq_pinyin.txt xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg
+# scp samp.txt xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg
+
+# scp -r john-1.8.0/ xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg
+
+# scp korelogic_rules.txt xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg

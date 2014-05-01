@@ -1,0 +1,55 @@
+
+
+
+------------- IW_ANALYZE_SET.PY
+
+> the analysis of the passwords. incorporates looking at both the classification of parts of the password as well as the structures (need to fix for structures)
+
+------------- IW_CHECK_PINYIN.PY
+
+> not really useful now? was just checking if there contained any pinyin in each of the passwords in a list.
+> DEPRECATED.
+
+------------- IW_CREATE_STRUCTS.PY
+
+> takes a list of passwords and creates the list of structures that encompasses them. lists them in order of probability.
+> DEPRECATED.
+
+------------- IW_ENGLISH_FREQ.PY
+
+> modified an existing english frequency list so that it only contained legitimate english words (legitimate = from 'words' dictionary).
+> DEPRECATED.
+
+------------- IW_PARSE_NGRAMS.PY
+
+> used specifically for parsing the google n-grams data. 
+
+------------- IW_PARSE_PW_OUT.PY
+
+> takes the different password lists and parses them so that only the password is outputed.
+
+------------- IW_PINYIN_COLLECT.PY
+
+> specifically for the pinyin list that was found online. parses them by the pinyin and grabs their frequency as well.
+
+------------- IW_PINYIN_FIND.PY
+
+> analysis of a password. breaks it down into pinyin and/or english.
+> DEPRECATED.
+
+------------- IW_SHORTEN_DICT.PY
+
+> shortens the english frequency list so that it only contains words of over threshold frequency.
+
+------------- IW_SPLIT_TRAIN_TEST.PY
+
+> splits a password list into a training and testing set. training set contains 80% of the words. testing set contains 20% of the words.
+
+
+
+
+
+
+------------- THE PROCESS
+
+> get the benchmark from john the ripper. to get a list of the words it would generate, run: ./john --wordlist=../../70yx_short.txt  --rules --stdout > ../../jtr_testing.txt
