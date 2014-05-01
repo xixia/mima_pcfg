@@ -1,4 +1,5 @@
 # the inputs must be of only the passwords in a randomized order.
+# usage: python iw_split_train_test.py [password file to split]
 
 import sys
 

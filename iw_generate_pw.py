@@ -1,3 +1,5 @@
+# usage: python iw_generate_pw.py [prefix of all the info files] [minimum amount to generate] [training file] [output file]
+
 import sys
 import Queue
 
@@ -5,6 +7,8 @@ num_tab = {}
 rand_tab = {}
 pinyin_tab = {}
 eng_tab = {}
+
+trained_pw = ()
 
 def load_prob(filename):
   f = open(filename, 'r')
@@ -22,11 +26,13 @@ def load_prob(filename):
   return tab
 
 def recurse_find(comp, ind, curr, poss):
+  global trained_pw
   comp_len = len(comp)
 
   # base case...
   if (ind == comp_len):
-    poss.append(curr)
+    if (curr not in trained_pw):
+      poss.append(curr)
     return poss
 
   # have group, ind, sorted_prob
@@ -42,7 +48,7 @@ def recurse_find(comp, ind, curr, poss):
 # start of the main script.
 # ----------------------------------------------------------------------- #
 
-script, prefix, min_generate = sys.argv
+script, prefix, min_generate, training, outname = sys.argv
 
 # load in probability tables
 num_tab = load_prob(prefix + '_num.txt')
@@ -52,6 +58,8 @@ rand_tab = load_prob(prefix + '_rand.txt')
 spec_tab = load_prob(prefix + '_spec.txt')
 
 fstruct = open(prefix + '_structs.txt', 'r')
+
+fo = open(outname + '.txt', 'w')
 
 recycle = []
 poss = []
@@ -115,8 +123,27 @@ for line in fstruct.readlines():
 # after generation, look at each component's index. increment one at each stage.
 # put it into a list. sort the list. grab the one with the highest probability. put that respective index back on the pq.
 
+# guess the passwords from training first.
+ftrain = open(training, 'r')
+
 num_generated = 0
 min_gen = int(min_generate)
+trained_pw = []
+for line in ftrain.readlines():
+  if (num_generated >= min_gen):
+    break
+
+  line = line.split()
+  if (len(line) == 1):
+    break
+
+  fo.write('%s\n' % line[0])
+  trained_pw.append(line[0])
+  num_generated += 1
+
+trained_pw = set(trained_pw)
+
+# now go onto other generation. but do not repeat guesses...!!
 while ((num_generated < min_gen) or (not pq.empty())):
   g = pq.get()
 
@@ -126,7 +153,8 @@ while ((num_generated < min_gen) or (not pq.empty())):
   poss = recurse_find(data['comp'], 0, '', [])
   num_generated += len(poss)
 
-  print '\n'.join(poss)
+  if (len(poss) != 0):
+    fo.write('%s' % '\n'.join(poss))
 
   if (num_generated > min_gen):
     break

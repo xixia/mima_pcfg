@@ -3,45 +3,49 @@
 # python iw_calculate_accuracy.py [text file of generated passwords] [text file of known test passwords] [file name to print information to]
 
 
-
 import sys
 
-script, generated, test, outname = sys.argv
+script, generated, test, dataname = sys.argv
 
 ftest = open(test, 'r')
 fgen = open(generated, 'r')
-fo = open(outname + '.txt', 'w')
+fo = open(dataname + '.txt', 'w')
 
-pw = []
+pw = {}
 total_pw = 0
 
+# test file is in the format of pw freq per line.
 for line in ftest.readlines():
-  pw.append(line.rstrip().lower())
-  total_pw += 1
+  line = line.split()
+  w = line[0]
+  freq = int(line[1])
 
-pw = set(pw)
+  pw[w] = freq
+  total_pw += freq
+
 print 'completed loading test passwords'
-found_pw = []
+found_pw = {}
 
 total_correct = 0
 total_gen = 0
 for line in fgen.readlines():
-  word = line.rstrip().lower()
-  if (word in pw):
-    total_correct += 1
-    found_pw.append(word)
-    print word
+  word = line.rstrip().lower()      # should lower, esp for jtr stuff.
+
+  if (word in pw) and (word not in found_pw):
+    total_correct += pw[word]
+    found_pw[word] = 1
+    fo.write('%s %d %f\n' % (word, total_correct, float(total_correct)/total_pw))
   total_gen += 1
 
-found_pw = set(found_pw)
+# found_pw = set(found_pw)
 
-# going to print to an output file all of the passwords in the test file, in sorted order. passwords with asterisk by them means they were found by algorithm.
-sorted_pw = sorted(list(pw))
-for w in sorted_pw:
-  if w in found_pw:
-    fo.write('%s *\n' % w)
-  else:
-    fo.write('%s\n' % w)
+# # going to print to an output file all of the passwords in the test file, in sorted order. passwords with asterisk by them means they were found by algorithm.
+# sorted_pw = sorted(list(pw))
+# for w in sorted_pw:
+#   if w in found_pw:
+#     fo.write('%s *\n' % w)
+#   else:
+#     fo.write('%s\n' % w)
 
 
 print 'total words generated', total_gen
