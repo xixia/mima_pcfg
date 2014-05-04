@@ -34,7 +34,12 @@ for line in fgen.readlines():
   if (word in pw) and (word not in found_pw):
     total_correct += pw[word]
     found_pw[word] = 1
-    fo.write('%s %d %f\n' % (word, total_correct, float(total_correct)/total_pw))
+  
+  # not listing each password.
+  fo.write('%d %f\n' % (total_correct, float(total_correct) / total_pw))
+
+  # listing each password.
+  # fo.write('%s %d %f\n' % (word, total_correct, float(total_correct)/total_pw))
   total_gen += 1
 
 # found_pw = set(found_pw)

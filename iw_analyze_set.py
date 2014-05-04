@@ -360,6 +360,8 @@ for line in f.readlines():
   check = line[0]
   freq = int(line[1])
 
+  # print check
+
   if ((total_lines % 1000) == 0):
     print 'on password', total_lines
 
@@ -380,6 +382,7 @@ for line in f.readlines():
   prev = ''         # keeps track of the previous character.
   same = 0          # keeps track of the longest string of same characters.
   flag_ident = False  # flag which notes if this password is just a string of identical characters.
+  letters = {}      # dictionary to keep track of the letters in this password.
 
   # determines the primitive structure of this passwords (letters v. numbers v. special)
   for c in check:
@@ -389,6 +392,10 @@ for line in f.readlines():
     elif (c.isalpha()):
       curr_state = 'c'
       valid_length += 1
+
+      # put this letter in the dictionary.
+      letters.setdefault(c, 0)
+      letters[c] += 1
 
       # should only do this check when they're characters.
       if (c == prev):
@@ -409,6 +416,9 @@ for line in f.readlines():
 
   current_struct += prev_state + str(total)
   comp.append({'type': prev_state, 'len': total, 'ind': (ind - total)})
+
+  if (len(letters) < (0.3 * valid_length)):
+    flag_ident = True
 
   if (same >= (0.7 * len(check))):
     flag_ident = True

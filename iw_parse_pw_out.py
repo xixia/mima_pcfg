@@ -25,11 +25,11 @@ if (pwfile == '70yx'):
     l_split = line.split()
     all_pw.append(l_split[2].rstrip())
 
-  all_pw = set(all_pw)
-  passwords = list(all_pw)
-  shuffle(passwords)
+  # all_pw = set(all_pw)
+  # passwords = list(all_pw)
+  # shuffle(passwords)
 
-  for pw in passwords:
+  for pw in all_pw:
     fo_70yx.write('%s\n' % pw)
 
   # for i in range(0,500000):

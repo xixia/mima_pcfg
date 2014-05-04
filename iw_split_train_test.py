@@ -49,5 +49,6 @@ testsort = sorted(testset, key=testset.get, reverse = True)
 for p in trainsort:
   f_train.write('%s %d\n' % (p, trainset[p]))
   f_pure.write('%s\n' % p)
-for p in testset:
+  
+for p in testsort:
   f_test.write('%s %d\n' % (p, testset[p]))

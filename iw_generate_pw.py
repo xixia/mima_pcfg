@@ -154,7 +154,8 @@ while ((num_generated < min_gen) or (not pq.empty())):
   num_generated += len(poss)
 
   if (len(poss) != 0):
-    fo.write('%s' % '\n'.join(poss))
+    for po in poss:
+      fo.write('%s\n' % po)
 
   if (num_generated > min_gen):
     break

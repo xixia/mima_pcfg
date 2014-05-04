@@ -11,4 +11,5 @@
 # scp xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg/70yx_eng.txt .
 
 # scp xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg/70yx_short_structs.txt .
-scp xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg/70yx_short_full_2000000.txt .
+scp xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg/70yx_short_gen_info.txt .
+scp xixiaw@cycles.cs.princeton.edu:/n/fs/chinese-pcfg/70yx_short_jtr_info.txt .
