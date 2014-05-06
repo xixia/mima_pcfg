@@ -16,7 +16,7 @@ total_pw = 0
 
 # test file is in the format of pw freq per line.
 for line in ftest.readlines():
-  line = line.split()
+  line = line.rsplit(' ', 1)
   w = line[0]
   freq = int(line[1])
 

@@ -25,6 +25,23 @@ def load_prob(filename):
 
   return tab
 
+def load_prob_spec(filename):
+  f = open(filename, 'r')
+  tab = {}
+
+  for line in f.readlines():
+    spl = line.rstrip().rsplit(' ', 1)
+    prob = float(spl[1])
+
+    spl_first = spl[0].split(' ', 1)
+    length = int(spl_first[0])
+
+    tab.setdefault(length, {})
+    tab[length].setdefault(prob, [])
+    tab[length][prob].append(spl_first[1])
+
+  return tab
+
 def recurse_find(comp, ind, curr, poss):
   global trained_pw
   comp_len = len(comp)
@@ -55,7 +72,7 @@ num_tab = load_prob(prefix + '_num.txt')
 eng_tab = load_prob(prefix + '_eng.txt')
 pinyin_tab = load_prob(prefix + '_pinyin.txt')
 rand_tab = load_prob(prefix + '_rand.txt')
-spec_tab = load_prob(prefix + '_spec.txt')
+spec_tab = load_prob_spec(prefix + '_spec.txt')
 
 fstruct = open(prefix + '_structs.txt', 'r')
 
@@ -73,6 +90,8 @@ for line in fstruct.readlines():
   s_present = line.find('s');
   if (s_present != -1):
     continue
+
+  print line
 
   split = line.split()
   struct_len = len(split[0])
