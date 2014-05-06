@@ -353,10 +353,13 @@ pinyin_str = CollectTerms()
 eng_str = CollectTerms()
 rand_str = CollectTerms()
 
+total_pinyin = 0
+total_nonnum = 0
+
 types = ['ENGLISH', 'PINYIN', 'RANDOM', 'HYBRID']
 
 for line in f.readlines():
-  line = line.split()
+  line = line.rsplit(' ', 1)
   check = line[0]
   freq = int(line[1])
 
@@ -439,6 +442,9 @@ for line in f.readlines():
     for i in range(0, len(check)):
       recurse_check(check[i:], valid_eng, root_eng, '')
 
+    if (len(valid_pinyin) != 0) and (len(valid_eng) != 0):
+      total_nonnum += freq
+
     fo.write('----------- CURRENT PASSWORD: %s\n' % check)
 
     # find accuracy compositions
@@ -447,6 +453,7 @@ for line in f.readlines():
 
     # looking at each score - analyze if it's overall pinyin or english.
     for key in sorted(ranked.iterkeys()):
+
       if (ind == max_num):
         break
       num_eng = 0
@@ -563,17 +570,20 @@ for line in f.readlines():
     fo.write('\n')
     fo.write('%s is a %s password.\n' % (check, best[0]['type']))
 
-    for i in range (1, len(best)):
-      curr_score = best[i]['score']
-      if (curr_score > (5 * prev_score)):
-        break
+    if (best[0]['type'] == 'PINYIN'):
+      total_pinyin += freq
 
-      fo.write('%f: ' % curr_score)
+    # for i in range (1, len(best)):
+    #   curr_score = best[i]['score']
+    #   if (curr_score > (5 * prev_score)):
+    #     break
 
-      for w in best[i]['seq']:
-        fo.write('(%s, %s) ' % (w['word'], w['type']))
-      fo.write('\n')
-      fo.write('%s is a %s password.\n' % (check, best[i]['type']))
+    #   fo.write('%f: ' % curr_score)
+
+    #   for w in best[i]['seq']:
+    #     fo.write('(%s, %s) ' % (w['word'], w['type']))
+    #   fo.write('\n')
+    #   fo.write('%s is a %s password.\n' % (check, best[i]['type']))
 
   else:
     fo.write('%s is a RANDOM password.\n' % check)
@@ -592,3 +602,8 @@ pinyin_str.outputToFile(prefix + '_pinyin')
 eng_str.outputToFile(prefix + '_eng')
 rand_str.outputToFile(prefix + '_rand')
 spec_str.outputToFile(prefix + '_spec')
+
+print total_pinyin
+print float(total_pinyin) / total_lines
+print float(total_pinyin) / total_nonnum
+print total_lines, total_nonnum

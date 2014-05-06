@@ -40,7 +40,7 @@ if (pwfile == '70yx'):
 # csdn parsing.
 
 elif (pwfile == 'csdn'):
-  f_csdn = open('csdn.txt', 'r')
+  f_csdn = open('csdn.sql', 'r')
   fo_csdn = open('csdn_cor.txt', 'w')
 
   lines = f_csdn.readlines()
@@ -55,7 +55,7 @@ elif (pwfile == 'csdn'):
 # uuu9 parsing.
 
 elif (pwfile == 'uuu9'):
-  f_uuu9 = open('uuu9_samp.txt', 'r')
+  f_uuu9 = open('uuu9.txt', 'r')
   fo_uuu9 = open('uuu9_cor.txt', 'w')
 
   lines = f_uuu9.readlines()
